@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#07090b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>テンポ練習</title>
+<style>
+:root{
+  --bg:#07090b; --panel:#12161a; --panel2:#1a2026; --line:#2a323a;
+  --text:#ffffff; --sub:#a9b4bf; --accent:#39ff14; --accent-ink:#041004;
+  --c-address:#ffffff; --c-back:#38d8ff; --c-down:#39ff14; --c-finish:#ffd400;
+  --track:#232b33; --shadow:0 0 22px rgba(57,255,20,.55);
+}
+:root[data-theme="light"]{
+  --bg:#f4f6f8; --panel:#ffffff; --panel2:#e9edf1; --line:#c9d1d9;
+  --text:#05080a; --sub:#3d4955; --accent:#0a8a00; --accent-ink:#ffffff;
+  --c-address:#05080a; --c-back:#0068c9; --c-down:#0a8a00; --c-finish:#b36b00;
+  --track:#d5dce3; --shadow:0 0 14px rgba(10,138,0,.35);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP","Segoe UI",sans-serif;
+  -webkit-user-select:none;user-select:none;touch-action:manipulation}
+.app{max-width:560px;margin:0 auto;padding:12px 14px calc(24px + env(safe-area-inset-bottom))}
+button{font:inherit;color:inherit;cursor:pointer;border:none;background:none}
+svg{display:block}
+
+/* ヘッダー */
+.top{display:flex;gap:10px;align-items:center}
+.seg{flex:1;display:flex;background:var(--panel);border:2px solid var(--line);border-radius:16px;padding:4px}
+.seg button{flex:1;min-height:52px;border-radius:12px;font-size:18px;font-weight:800;color:var(--sub);letter-spacing:.04em}
+.seg button.on{background:var(--accent);color:var(--accent-ink)}
+.iconbtn{width:60px;height:60px;border-radius:16px;background:var(--panel);border:2px solid var(--line);display:grid;place-items:center}
+.iconbtn svg{width:30px;height:30px;stroke:var(--text);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+.card{background:var(--panel);border:2px solid var(--line);border-radius:20px;padding:14px;margin-top:12px}
+.label{font-size:13px;font-weight:700;color:var(--sub);letter-spacing:.12em}
+
+/* BPM */
+.bpm{text-align:center}
+.bpm .num{font-size:96px;line-height:1;font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:-.02em;margin:6px 0 2px}
+.bpm .unit{font-size:16px;font-weight:800;color:var(--accent);letter-spacing:.2em}
+.adj{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.adj button{min-height:64px;border-radius:14px;background:var(--panel2);border:2px solid var(--line);font-size:22px;font-weight:900;font-variant-numeric:tabular-nums}
+.adj button:active,.mini button:active,.chip:active{background:var(--accent);color:var(--accent-ink)}
+.clubname{margin-top:4px;font-size:15px;font-weight:800;color:var(--sub)}
+
+/* ビジュアルガイド */
+.guide{position:relative}
+.phase{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.phase .name{font-size:34px;font-weight:900;transition:color .08s}
+.phase .ev{font-size:18px;font-weight:900;color:var(--accent);opacity:0;transition:opacity .25s}
+.phase .ev.show{opacity:1;transition:none}
+.track{position:relative;height:90px;margin-top:10px}
+.track .rail{position:absolute;left:4%;right:4%;top:50%;height:10px;margin-top:-5px;background:var(--track);border-radius:6px}
+.track .mid{position:absolute;left:50%;top:14px;bottom:14px;width:3px;margin-left:-1.5px;background:var(--sub);opacity:.6;border-radius:2px}
+.track .lim{position:absolute;top:24px;bottom:24px;width:3px;margin-left:-1.5px;background:var(--c-back);opacity:.7;border-radius:2px}
+.track .dot{position:absolute;top:50%;left:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:var(--c-address);box-shadow:0 0 24px currentColor;color:var(--c-address);will-change:transform}
+.track .cap{position:absolute;bottom:-2px;font-size:12px;font-weight:700;color:var(--sub)}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.steps div{text-align:center;font-size:clamp(10px,2.8vw,13px);white-space:nowrap;letter-spacing:-.03em;font-weight:800;padding:8px 2px;border-radius:10px;background:var(--panel2);color:var(--sub);border:2px solid transparent}
+.steps div.on{color:var(--bg);border-color:transparent}
+
+/* スタート */
+.start{width:100%;min-height:84px;margin-top:12px;border-radius:20px;background:var(--accent);color:var(--accent-ink);font-size:28px;font-weight:900;letter-spacing:.1em;display:flex;align-items:center;justify-content:center;gap:12px;box-shadow:var(--shadow)}
+.start svg{width:30px;height:30px;fill:currentColor}
+.start.playing{background:var(--panel2);color:var(--text);border:3px solid var(--accent);box-shadow:none}
+
+/* トグルチップ */
+.toggles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.tg{min-height:62px;border-radius:14px;background:var(--panel);border:2px solid var(--line);font-size:14px;font-weight:800;color:var(--sub);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.tg svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tg.on{border-color:var(--accent);color:var(--text)}
+.tg.on svg{stroke:var(--accent)}
+
+/* 比率・幅 */
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.val{font-size:40px;font-weight:900;font-variant-numeric:tabular-nums}
+.val small{font-size:18px;color:var(--sub);font-weight:800;margin-left:4px}
+.mini{display:flex;gap:8px}
+.mini button{min-width:64px;min-height:58px;border-radius:14px;background:var(--panel2);border:2px solid var(--line);font-size:20px;font-weight:900}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.chip{min-height:48px;padding:0 16px;border-radius:12px;background:var(--panel2);border:2px solid var(--line);font-size:17px;font-weight:800}
+.chip.on{border-color:var(--accent);color:var(--accent)}
+.unitseg{display:flex;background:var(--panel2);border-radius:12px;padding:3px;border:2px solid var(--line)}
+.unitseg button{min-width:56px;min-height:42px;border-radius:9px;font-weight:800;color:var(--sub)}
+.unitseg button.on{background:var(--text);color:var(--bg)}
+
+/* タイミング */
+.times{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.times div{background:var(--panel2);border-radius:14px;padding:10px 6px;text-align:center}
+.times b{display:block;font-size:30px;font-weight:900;font-variant-numeric:tabular-nums}
+.times span{font-size:12px;font-weight:800;color:var(--sub)}
+.times .tb b{color:var(--c-back)} .times .td b{color:var(--c-down)}
+.speed{margin-top:8px;font-size:13px;color:var(--sub);font-weight:700;text-align:center}
+
+/* クラブ */
+.clubs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.clubs button{min-height:64px;border-radius:14px;background:var(--panel2);border:2px solid var(--line);font-size:15px;font-weight:900;line-height:1.15;padding:4px}
+.clubs button small{display:block;font-size:12px;color:var(--sub);font-weight:700;margin-top:3px}
+.clubs button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.clubs button.on small{color:var(--accent-ink)}
+
+/* 設定 */
+.sheet{position:fixed;inset:0;background:var(--bg);z-index:10;overflow-y:auto;display:none}
+.sheet.open{display:block}
+.sheet h2{margin:0;font-size:26px;font-weight:900}
+.set{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:2px solid var(--line)}
+.set:last-child{border-bottom:none}
+.set .t{font-size:17px;font-weight:800}
+.set .d{font-size:12px;color:var(--sub);margin-top:3px;line-height:1.5}
+.sw{flex:none;width:76px;height:44px;border-radius:24px;background:var(--panel2);border:2px solid var(--line);position:relative}
+.sw::after{content:"";position:absolute;top:4px;left:4px;width:32px;height:32px;border-radius:50%;background:var(--sub);transition:transform .15s}
+.sw.on{background:var(--accent);border-color:var(--accent)}
+.sw.on::after{transform:translateX(32px);background:var(--accent-ink)}
+.seg.small button{min-height:44px;font-size:15px}
+input[type=range]{width:100%;accent-color:var(--accent);height:36px}
+.status{font-size:12px;color:var(--accent);font-weight:700;margin-top:4px}
+.ver{font-size:13px;color:var(--sub);line-height:1.7}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="seg" id="modeSeg">
+      <button data-mode="putter">パター</button>
+      <button data-mode="full">フルスイング</button>
+    </div>
+    <button class="iconbtn" id="openSet" aria-label="設定">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+    </button>
+  </div>
+
+  <!-- BPM -->
+  <div class="card bpm">
+    <div class="label">TEMPO</div>
+    <div class="num" id="bpmNum">80.0</div>
+    <div class="unit">BPM</div>
+    <div class="clubname" id="clubName"></div>
+    <div class="adj">
+      <button data-d="-1">-1</button>
+      <button data-d="-0.1">-0.1</button>
+      <button data-d="0.1">+0.1</button>
+      <button data-d="1">+1</button>
+    </div>
+  </div>
+
+  <!-- ビジュアルガイド -->
+  <div class="card guide">
+    <div class="phase">
+      <div class="name" id="phaseName">アドレス</div>
+      <div class="ev" id="phaseEv"></div>
+    </div>
+    <div class="track" id="track">
+      <div class="rail"></div>
+      <div class="lim" id="limBack"></div>
+      <div class="mid"></div>
+      <div class="dot" id="dot"></div>
+      <div class="cap" style="left:4%">バック</div>
+      <div class="cap" style="right:4%">フォロー</div>
+    </div>
+    <div class="steps" id="steps">
+      <div data-p="0">アドレス</div><div data-p="1">バックスイング</div><div data-p="2">ダウンスイング</div><div data-p="3">フィニッシュ</div>
+    </div>
+  </div>
+
+  <button class="start" id="startBtn"><svg viewBox="0 0 24 24" id="startIcon"><path d="M7 4.5v15l13-7.5z"/></svg><span id="startTxt">START</span></button>
+
+  <div class="toggles">
+    <button class="tg" data-key="click"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>メトロノーム</button>
+    <button class="tg" data-key="pitch"><svg viewBox="0 0 24 24"><path d="M3 18h4v-4H3zM10 18h4V10h-4zM17 18h4V5h-4z"/></svg>比率ガイド</button>
+    <button class="tg" data-key="vib"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M3 8v8M21 8v8"/></svg>バイブ</button>
+  </div>
+
+  <!-- 比率 -->
+  <div class="card">
+    <div class="row">
+      <div>
+        <div class="label">RATIO　バック：ダウン</div>
+        <div class="val" id="ratioVal">2.0<small>: 1</small></div>
+      </div>
+      <div class="mini">
+        <button data-r="-0.1">-0.1</button>
+        <button data-r="0.1">+0.1</button>
+      </div>
+    </div>
+    <div class="chips" id="ratioChips"></div>
+  </div>
+
+  <!-- パター専用：ストローク幅＋タイミング -->
+  <div class="card" id="strokeCard">
+    <div class="row">
+      <div>
+        <div class="label">ストローク幅（テークバック量）</div>
+        <div class="val" id="widthVal">20<small>cm</small></div>
+      </div>
+      <div class="unitseg" id="unitSeg">
+        <button data-u="cm">cm</button><button data-u="inch">inch</button>
+      </div>
+    </div>
+    <div class="mini" style="margin-top:10px">
+      <button data-w="-5" style="flex:1">-5</button>
+      <button data-w="-1" style="flex:1">-1</button>
+      <button data-w="1" style="flex:1">+1</button>
+      <button data-w="5" style="flex:1">+5</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label">タイミング（自動計算）</div>
+    <div class="times">
+      <div class="tb"><b id="tBack">0.00</b><span>バックスイング 秒</span></div>
+      <div class="td"><b id="tDown">0.00</b><span>ダウンスイング 秒</span></div>
+      <div><b id="tTotal">0.00</b><span>合計 秒</span></div>
+    </div>
+    <div class="speed" id="speedLine"></div>
+  </div>
+
+  <!-- フルスイング専用：クラブ選択 -->
+  <div class="card" id="clubCard">
+    <div class="label">クラブ選択（推奨BPMを自動セット）</div>
+    <div class="clubs" id="clubs"></div>
+  </div>
+</div>
+
+<!-- 設定画面 -->
+<div class="sheet" id="sheet">
+  <div class="app">
+    <div class="top">
+      <h2 style="flex:1">設定</h2>
+      <button class="iconbtn" id="closeSet" aria-label="閉じる">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+
+    <div class="card">
+      <div class="set" style="display:block">
+        <div class="t">起動時のテンプレート</div>
+        <div class="d">アプリを開いたときのBPMの初期値。女性標準は全体に少しゆったりめ。</div>
+        <div class="seg small" id="tplSeg" style="margin-top:10px">
+          <button data-v="male">男性標準</button><button data-v="female">女性標準</button>
+        </div>
+        <button class="chip" id="tplApply" style="margin-top:10px;width:100%">今すぐBPMに適用</button>
+      </div>
+      <div class="set" style="display:block">
+        <div class="t">テーマ</div>
+        <div class="seg small" id="themeSeg" style="margin-top:10px">
+          <button data-v="dark">ダーク</button><button data-v="light">ライト</button><button data-v="auto">自動</button>
+        </div>
+      </div>
+      <div class="set">
+        <div>
+          <div class="t">画面を消灯させない</div>
+          <div class="d">再生中、自動ロックがかからないようにします。</div>
+          <div class="status" id="wakeStatus"></div>
+        </div>
+        <button class="sw" data-key="wake" aria-label="スリープ防止"></button>
+      </div>
+      <div class="set">
+        <div>
+          <div class="t">バックグラウンド再生</div>
+          <div class="d">画面ロック中や他のアプリ使用中もテンポ音を鳴らし続けます（音楽プレーヤー方式）。端末によっては止まる場合があります。振動は画面表示中のみ。</div>
+        </div>
+        <button class="sw" data-key="bg" aria-label="バックグラウンド再生"></button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="set">
+        <div><div class="t">メトロノーム音</div><div class="d">各タイミングでクリック音を鳴らします。</div></div>
+        <button class="sw" data-key="click"></button>
+      </div>
+      <div class="set">
+        <div><div class="t">比率ガイド（ピッチ変化）</div><div class="d">アドレス・テークバック・切り返し・インパクトで音の高さを変えます。</div></div>
+        <button class="sw" data-key="pitch"></button>
+      </div>
+      <div class="set">
+        <div><div class="t">バイブレーション</div><div class="d">カウントに合わせて振動。切り返しは強め。iPhoneのSafariは非対応です。</div></div>
+        <button class="sw" data-key="vib"></button>
+      </div>
+      <div class="set" style="display:block">
+        <div class="t">音量</div>
+        <input type="range" id="vol" min="0" max="100" step="1">
+      </div>
+    </div>
+
+    <div class="card ver">
+      <b>テンポ練習 v1.0.0</b><br>
+      最終更新: 2026-10-31　初版（パター／フルスイング、BPM微調整、比率、ストローク幅、タイミング計算、クラブ選択、音・ピッチ・振動、各種設定）<br>
+      テンポの考え方: 1拍（60÷BPM秒）＝バックスイングの時間。ダウンスイング＝バックスイング÷比率。<br>
+      1サイクル: アドレス（1拍）→ テークバック → 切り返し → インパクト → フィニッシュ（1拍）
+    </div>
+  </div>
+</div>
+
+<audio id="bgAudio" playsinline preload="auto"></audio>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- データ ---------- */
+var CLUBS = [
+  {id:'DRIVER',   name:'DRIVER'},
+  {id:'FW',       name:'3W/5W'},
+  {id:'UT',       name:'UT/LONG IRON'},
+  {id:'I57',      name:'5-7 IRON'},
+  {id:'I89',      name:'8-9 IRON'},
+  {id:'PW',       name:'PW'},
+  {id:'APPROACH', name:'APPROACH'},
+  {id:'BUNKER',   name:'BUNKER'},
+  {id:'PUTTER',   name:'PUTTER'}
+];
+// 推奨標準BPM（1拍＝バックスイング時間）
+var TEMPLATES = {
+  male:   {DRIVER:76, FW:78, UT:80, I57:82, I89:84, PW:86, APPROACH:74, BUNKER:72, PUTTER:80},
+  female: {DRIVER:72, FW:74, UT:76, I57:78, I89:80, PW:82, APPROACH:70, BUNKER:68, PUTTER:76}
+};
+var RATIO_CHIPS = { putter:[1.5, 2.0, 2.5, 3.0], full:[2.0, 2.5, 3.0, 3.5] };
+var BPM_MIN = 30, BPM_MAX = 160;
+
+var STORE_KEY = 'golf_tempo_v1';
+var defaults = {
+  mode:'putter', club:'DRIVER', template:'male', theme:'dark',
+  wake:true, bg:false, click:true, pitch:true, vib:true, vol:80,
+  ratio:{putter:2.0, full:3.0}, widthCm:20, unit:'cm'
+};
+var S = load();
+// BPMは起動時テンプレートから毎回セット（保存しない）
+var bpm = { putter: TEMPLATES[S.template].PUTTER, full: TEMPLATES[S.template][S.club] };
+
+function load(){
+  var o = JSON.parse(JSON.stringify(defaults));
+  try{
+    var raw = localStorage.getItem(STORE_KEY);
+    if(raw){ var s = JSON.parse(raw); for(var k in s){ if(k in o) o[k] = s[k]; } }
+  }catch(e){}
+  if(!TEMPLATES[o.template]) o.template = 'male';
+  if(o.club === 'PUTTER') o.club = 'DRIVER';
+  return o;
+}
+function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(S)); }catch(e){} }
+
+function $(id){ return document.getElementById(id); }
+function round1(v){ return Math.round(v*10)/10; }
+function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+
+/* ---------- テンポ計算 ---------- */
+function timing(){
+  var b = bpm[S.mode], r = S.ratio[S.mode];
+  var beat = 60 / b;
+  var back = beat, down = back / r;
+  return { beat:beat, back:back, down:down, total:back+down,
+           // 1サイクル: アドレス1拍 + バック + ダウン + フィニッシュ1拍
+           cycle: beat + back + down + beat,
+           tTake: beat, tTop: beat+back, tImp: beat+back+down };
+}
+
+/* ---------- 画面描画 ---------- */
+function render(){
+  document.querySelectorAll('#modeSeg button').forEach(function(b){ b.classList.toggle('on', b.dataset.mode===S.mode); });
+  $('bpmNum').textContent = bpm[S.mode].toFixed(1);
+  var club = S.mode==='putter' ? 'PUTTER' : CLUBS.filter(function(c){return c.id===S.club;})[0].name;
+  $('clubName').textContent = club;
+  $('ratioVal').innerHTML = S.ratio[S.mode].toFixed(1) + '<small>: 1</small>';
+  var chips = $('ratioChips'); chips.innerHTML = '';
+  RATIO_CHIPS[S.mode].forEach(function(v){
+    var c = document.createElement('button'); c.className = 'chip' + (Math.abs(v-S.ratio[S.mode])<0.001?' on':'');
+    c.textContent = v.toFixed(1)+' : 1';
+    c.onclick = function(){ setRatio(v); };
+    chips.appendChild(c);
+  });
+  $('strokeCard').classList.toggle('hidden', S.mode!=='putter');
+  $('clubCard').classList.toggle('hidden', S.mode!=='full');
+  // ストローク幅
+  if(S.unit==='cm') $('widthVal').innerHTML = Math.round(S.widthCm) + '<small>cm</small>';
+  else $('widthVal').innerHTML = (S.widthCm/2.54).toFixed(1) + '<small>inch</small>';
+  document.querySelectorAll('#unitSeg button').forEach(function(b){ b.classList.toggle('on', b.dataset.u===S.unit); });
+  // タイミング
+  var t = timing();
+  $('tBack').textContent = t.back.toFixed(2);
+  $('tDown').textContent = t.down.toFixed(2);
+  $('tTotal').textContent = t.total.toFixed(2);
+  if(S.mode==='putter'){
+    var m = S.widthCm/100;
+    $('speedLine').textContent = '平均ヘッド速度　バック ' + (m/t.back).toFixed(2) + ' m/s ／ ダウン ' + (m/t.down).toFixed(2) + ' m/s';
+  } else {
+    $('speedLine').textContent = '1サイクル ' + t.cycle.toFixed(2) + ' 秒（アドレスとフィニッシュ各1拍を含む）';
+  }
+  // クラブ
+  var cl = $('clubs'); cl.innerHTML = '';
+  CLUBS.forEach(function(c){
+    var b = document.createElement('button');
+    var on = (S.mode==='full' && c.id===S.club);
+    b.className = on ? 'on' : '';
+    b.innerHTML = c.name + '<small>' + TEMPLATES[S.template][c.id] + ' BPM</small>';
+    b.onclick = function(){ selectClub(c.id); };
+    cl.appendChild(b);
+  });
+  // トグル
+  document.querySelectorAll('.tg, .sw').forEach(function(el){ el.classList.toggle('on', !!S[el.dataset.key]); });
+  document.querySelectorAll('#tplSeg button').forEach(function(b){ b.classList.toggle('on', b.dataset.v===S.template); });
+  document.querySelectorAll('#themeSeg button').forEach(function(b){ b.classList.toggle('on', b.dataset.v===S.theme); });
+  $('vol').value = S.vol;
+  // バック上限マーカー
+  $('limBack').style.left = (50 - amp()*46) + '%';
+  if(!playing) drawAt(0);
+}
+
+function applyTheme(){
+  var t = S.theme;
+  if(t==='auto') t = (window.matchMedia && matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
+  document.documentElement.dataset.theme = t;
+  var m = document.querySelector('meta[name=theme-color]');
+  m.setAttribute('content', t==='light' ? '#f4f6f8' : '#07090b');
+}
+if(window.matchMedia) matchMedia('(prefers-color-scheme: light)').addEventListener('change', function(){ if(S.theme==='auto') applyTheme(); });
+
+/* ---------- 操作 ---------- */
+function setBpm(v){ bpm[S.mode] = clamp(round1(v), BPM_MIN, BPM_MAX); changed(); }
+function setRatio(v){ S.ratio[S.mode] = clamp(round1(v), 1.0, 5.0); save(); changed(); }
+function selectClub(id){
+  if(id==='PUTTER'){ S.mode = 'putter'; bpm.putter = TEMPLATES[S.template].PUTTER; }
+  else { S.club = id; bpm.full = TEMPLATES[S.template][id]; }
+  save(); changed();
+}
+function changed(){ render(); if(playing) scheduleRestart(); }
+
+// 長押しで連続変更（グローブでも使いやすく）
+function holdRepeat(el, fn){
+  var t1, t2;
+  function stop(){ clearTimeout(t1); clearInterval(t2); }
+  el.addEventListener('pointerdown', function(e){
+    e.preventDefault(); fn();
+    t1 = setTimeout(function(){ t2 = setInterval(fn, 90); }, 450);
+  });
+  ['pointerup','pointerleave','pointercancel'].forEach(function(ev){ el.addEventListener(ev, stop); });
+}
+document.querySelectorAll('.adj button').forEach(function(b){
+  var d = parseFloat(b.dataset.d); holdRepeat(b, function(){ setBpm(bpm[S.mode] + d); });
+});
+document.querySelectorAll('[data-r]').forEach(function(b){
+  var d = parseFloat(b.dataset.r); holdRepeat(b, function(){ setRatio(S.ratio[S.mode] + d); });
+});
+document.querySelectorAll('[data-w]').forEach(function(b){
+  var d = parseFloat(b.dataset.w);
+  holdRepeat(b, function(){
+    var step = S.unit==='cm' ? d : d*2.54*0.5; // inch表示時は0.5inch単位（±5→±2.5inch）
+    S.widthCm = clamp(S.widthCm + step, 2, 150);
+    if(S.unit==='cm') S.widthCm = Math.round(S.widthCm);
+    save(); render();
+  });
+});
+document.querySelectorAll('#unitSeg button').forEach(function(b){ b.onclick = function(){ S.unit = b.dataset.u; save(); render(); }; });
+document.querySelectorAll('#modeSeg button').forEach(function(b){ b.onclick = function(){ S.mode = b.dataset.mode; save(); changed(); }; });
+document.querySelectorAll('.tg, .sw').forEach(function(el){
+  el.onclick = function(){
+    var k = el.dataset.key; S[k] = !S[k]; save(); render();
+    if(k==='wake') updateWake();
+    if((k==='click' || k==='pitch' || k==='bg') && playing) scheduleRestart();
+  };
+});
+document.querySelectorAll('#tplSeg button').forEach(function(b){ b.onclick = function(){ S.template = b.dataset.v; save(); render(); }; });
+$('tplApply').onclick = function(){
+  bpm.putter = TEMPLATES[S.template].PUTTER; bpm.full = TEMPLATES[S.template][S.club]; changed();
+};
+document.querySelectorAll('#themeSeg button').forEach(function(b){ b.onclick = function(){ S.theme = b.dataset.v; save(); applyTheme(); render(); }; });
+$('vol').oninput = function(){
+  S.vol = +this.value; save();
+  if(gain) gain.gain.value = S.vol/100;
+  $('bgAudio').volume = S.vol/100;
+};
+$('openSet').onclick = function(){ $('sheet').classList.add('open'); };
+$('closeSet').onclick = function(){ $('sheet').classList.remove('open'); };
+
+/* ---------- 音の生成（1サイクル分を波形として作る） ---------- */
+var ctx = null, gain = null, src = null, startAt = 0;
+var playing = false, useBg = false, restartTimer = null;
+var SR = 44100;
+
+var PITCH = { address:660, take:520, top:880, impact:1320 };
+function buildSamples(sr){
+  var t = timing();
+  var n = Math.round(t.cycle * sr);
+  var data = new Float32Array(n);
+  if(!S.click) return {data:data, t:t};
+  var ev = [
+    {at:0,       f:PITCH.address, a:0.55},
+    {at:t.tTake, f:PITCH.take,    a:0.75},
+    {at:t.tTop,  f:PITCH.top,     a:1.0},
+    {at:t.tImp,  f:PITCH.impact,  a:0.9}
+  ];
+  ev.forEach(function(e){
+    var f = S.pitch ? e.f : 1000;
+    var a = S.pitch ? e.a : (e.at===t.tTop ? 1.0 : 0.75);
+    var start = Math.round(e.at*sr), len = Math.round(0.07*sr);
+    for(var i=0;i<len && start+i<n;i++){
+      var x = i/sr;
+      var env = Math.exp(-x*55) * Math.min(1, i/30);
+      var v = Math.sin(2*Math.PI*f*x) + 0.35*Math.sin(2*Math.PI*f*2*x) + 0.15*Math.sin(2*Math.PI*f*3.01*x);
+      data[start+i] += 0.5 * a * env * v;
+    }
+  });
+  return {data:data, t:t};
+}
+
+function toWav(samples, sr, repeat){
+  var n = samples.length * repeat;
+  var buf = new ArrayBuffer(44 + n*2), dv = new DataView(buf);
+  function str(o,s){ for(var i=0;i<s.length;i++) dv.setUint8(o+i, s.charCodeAt(i)); }
+  str(0,'RIFF'); dv.setUint32(4, 36+n*2, true); str(8,'WAVE'); str(12,'fmt ');
+  dv.setUint32(16,16,true); dv.setUint16(20,1,true); dv.setUint16(22,1,true);
+  dv.setUint32(24,sr,true); dv.setUint32(28,sr*2,true); dv.setUint16(32,2,true); dv.setUint16(34,16,true);
+  str(36,'data'); dv.setUint32(40,n*2,true);
+  var o = 44;
+  for(var r=0;r<repeat;r++) for(var i=0;i<samples.length;i++){
+    var s = clamp(samples[i], -1, 1); dv.setInt16(o, s<0 ? s*0x8000 : s*0x7fff, true); o += 2;
+  }
+  return new Blob([buf], {type:'audio/wav'});
+}
+
+var cur = null; // 再生中のタイミング
+var bgUrl = null;
+
+function startAudio(){
+  useBg = !!S.bg;
+  if(useBg){
+    // バックグラウンド再生：音楽と同じ<audio>要素で鳴らす（ロック中も継続しやすい）
+    var b = buildSamples(SR); cur = b.t;
+    var rep = Math.max(1, Math.round(60 / cur.cycle)); // 約1分ぶん並べてループの継ぎ目を減らす
+    if(bgUrl) URL.revokeObjectURL(bgUrl);
+    bgUrl = URL.createObjectURL(toWav(b.data, SR, rep));
+    var a = $('bgAudio'); a.src = bgUrl; a.loop = true; a.volume = S.vol/100;
+    a.currentTime = 0;
+    var p = a.play(); if(p && p.catch) p.catch(function(){});
+    if('mediaSession' in navigator){
+      try{
+        navigator.mediaSession.metadata = new MediaMetadata({title:'テンポ練習 ' + bpm[S.mode].toFixed(1) + ' BPM', artist: S.mode==='putter'?'パター':'フルスイング'});
+        navigator.mediaSession.setActionHandler('pause', function(){ stop(); });
+        navigator.mediaSession.setActionHandler('play', function(){ start(); });
+      }catch(e){}
+    }
+  } else {
+    if(!ctx){ ctx = new (window.AudioContext||window.webkitAudioContext)(); gain = ctx.createGain(); gain.connect(ctx.destination); }
+    if(ctx.state==='suspended') ctx.resume();
+    gain.gain.value = S.vol/100;
+    var b2 = buildSamples(ctx.sampleRate); cur = b2.t;
+    var ab = ctx.createBuffer(1, b2.data.length, ctx.sampleRate);
+    ab.getChannelData(0).set(b2.data);
+    src = ctx.createBufferSource(); src.buffer = ab; src.loop = true; src.connect(gain);
+    startAt = ctx.currentTime + 0.08;
+    src.start(startAt);
+  }
+}
+function stopAudio(){
+  if(src){ try{ src.stop(); }catch(e){} src.disconnect(); src = null; }
+  var a = $('bgAudio'); a.pause();
+}
+function elapsed(){
+  if(useBg) return $('bgAudio').currentTime;
+  return ctx ? Math.max(0, ctx.currentTime - startAt) : 0;
+}
+
+function start(){
+  if(playing) return;
+  playing = true; startAudio();
+  lastCycle = -1; lastEv = -1;
+  $('startBtn').classList.add('playing'); $('startTxt').textContent = 'STOP';
+  $('startIcon').innerHTML = '<rect x="6" y="5" width="4.5" height="14" rx="1"/><rect x="13.5" y="5" width="4.5" height="14" rx="1"/>';
+  updateWake();
+  requestAnimationFrame(loop);
+  clearInterval(tickTimer); tickTimer = setInterval(tick, 25);
+}
+function stop(){
+  playing = false; stopAudio(); clearTimeout(restartTimer); clearInterval(tickTimer);
+  $('startBtn').classList.remove('playing'); $('startTxt').textContent = 'START';
+  $('startIcon').innerHTML = '<path d="M7 4.5v15l13-7.5z"/>';
+  updateWake(); drawAt(0);
+}
+function scheduleRestart(){
+  clearTimeout(restartTimer);
+  restartTimer = setTimeout(function(){ if(playing){ stopAudio(); startAudio(); lastCycle=-1; lastEv=-1; } }, 220);
+}
+$('startBtn').onclick = function(){ playing ? stop() : start(); };
+
+/* ---------- ビジュアルガイドとバイブ ---------- */
+var COLORS = ['--c-address','--c-back','--c-down','--c-finish'];
+var NAMES = ['アドレス','バックスイング','ダウンスイング','フィニッシュ'];
+var lastCycle = -1, lastEv = -1, evTimer = null, curPhase = -1;
+
+function amp(){
+  // パターはストローク幅に応じて振れ幅を変える（60cmで最大）
+  if(S.mode==='putter') return clamp(S.widthCm/60, 0.2, 1);
+  return 1;
+}
+function easeInOut(p){ return p<.5 ? 2*p*p : 1-Math.pow(-2*p+2,2)/2; }
+
+function drawAt(tc){
+  var t = cur && playing ? cur : timing();
+  var A = amp(), x = 0, ph = 0;
+  if(tc < t.tTake){ ph = 0; x = 0; }
+  else if(tc < t.tTop){ ph = 1; x = -A*easeInOut((tc-t.tTake)/t.back); }
+  else if(tc < t.tImp){ ph = 2; var p = (tc-t.tTop)/t.down; x = -A*(1-p*p); }  // 加速しながら戻る
+  else { ph = 3; var q = clamp((tc-t.tImp)/(t.beat*0.45), 0, 1);
+         var follow = S.mode==='putter' ? A : 1;
+         x = follow*(1-Math.pow(1-q,3)); }
+  var w = $('track').clientWidth * 0.46;
+  $('dot').style.transform = 'translateX(' + (x*w) + 'px)';
+  if(ph !== curPhase){
+    curPhase = ph;
+    var col = 'var(' + COLORS[ph] + ')';
+    $('dot').style.background = col; $('dot').style.color = col;
+    $('phaseName').textContent = NAMES[ph]; $('phaseName').style.color = col;
+    document.querySelectorAll('#steps div').forEach(function(d,i){
+      d.classList.toggle('on', i===ph); d.style.background = i===ph ? col : '';
+    });
+  }
+}
+
+function fireEvent(i){
+  var labels = ['アドレス','テークバック','切り返し','インパクト'];
+  var ev = $('phaseEv'); ev.textContent = labels[i]; ev.classList.add('show');
+  clearTimeout(evTimer); evTimer = setTimeout(function(){ ev.classList.remove('show'); }, 160);
+  if(S.vib && navigator.vibrate){
+    // 切り返しは強め（長め）に振動
+    navigator.vibrate(i===2 ? [90] : (i===0 ? [20] : [35]));
+  }
+}
+
+// 画面の描画(rAF)が間引かれる端末でも振動や表示がずれないよう、タイマーでも同じ処理を呼ぶ
+var tickTimer = null;
+function loop(){
+  if(!playing) return;
+  tick();
+  requestAnimationFrame(loop);
+}
+function tick(){
+  if(!playing) return;
+  var e = elapsed(), t = cur;
+  var cyc = Math.floor(e / t.cycle), tc = e - cyc*t.cycle;
+  if(e > 0){
+    var times = [0, t.tTake, t.tTop, t.tImp], idx = -1;
+    for(var i=3;i>=0;i--){ if(tc >= times[i]){ idx = i; break; } }
+    if(cyc !== lastCycle || idx !== lastEv){
+      if(!(cyc===lastCycle && idx < lastEv)) fireEvent(idx);
+      lastCycle = cyc; lastEv = idx;
+    }
+  }
+  drawAt(tc);
+}
+
+/* ---------- スリープ防止 ---------- */
+var wakeLock = null;
+function updateWake(){
+  var want = S.wake && playing && document.visibilityState==='visible';
+  if(want && !wakeLock && 'wakeLock' in navigator){
+    navigator.wakeLock.request('screen').then(function(l){
+      wakeLock = l; $('wakeStatus').textContent = '画面消灯を防止中';
+      l.addEventListener('release', function(){ wakeLock = null; $('wakeStatus').textContent = ''; });
+    }).catch(function(){ $('wakeStatus').textContent = '消灯防止を開始できませんでした（画面表示中に再開します）'; });
+  } else if(!want && wakeLock){
+    wakeLock.release(); wakeLock = null;
+  }
+  if(!('wakeLock' in navigator)) $('wakeStatus').textContent = 'このブラウザは非対応です';
+}
+document.addEventListener('visibilitychange', function(){
+  updateWake();
+  // バックグラウンド再生OFFで画面を離れたら止める
+  if(document.visibilityState==='hidden' && playing && !useBg) stop();
+});
+
+window.addEventListener('resize', function(){ if(!playing) drawAt(0); });
+
+applyTheme();
+render();
+})();
+</script>
+</body>
+</html>
