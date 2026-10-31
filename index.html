@@ -51,15 +51,31 @@ svg{display:block}
 /* ビジュアルガイド */
 .guide{position:relative}
 .phase{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
-.phase .name{font-size:34px;font-weight:900;transition:color .08s}
-.phase .ev{font-size:18px;font-weight:900;color:var(--accent);opacity:0;transition:opacity .25s}
+.phase{position:relative}
+.phase .name{font-size:clamp(26px,8.4vw,34px);font-weight:900;white-space:nowrap;transition:color .08s}
+.phase .ev{position:absolute;right:0;top:-2px;font-size:15px;font-weight:900;color:var(--accent);opacity:0;transition:opacity .25s}
 .phase .ev.show{opacity:1;transition:none}
-.track{position:relative;height:90px;margin-top:10px}
-.track .rail{position:absolute;left:4%;right:4%;top:50%;height:10px;margin-top:-5px;background:var(--track);border-radius:6px}
-.track .mid{position:absolute;left:50%;top:14px;bottom:14px;width:3px;margin-left:-1.5px;background:var(--sub);opacity:.6;border-radius:2px}
-.track .lim{position:absolute;top:24px;bottom:24px;width:3px;margin-left:-1.5px;background:var(--c-back);opacity:.7;border-radius:2px}
-.track .dot{position:absolute;top:50%;left:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:var(--c-address);box-shadow:0 0 24px currentColor;color:var(--c-address);will-change:transform}
-.track .cap{position:absolute;bottom:-2px;font-size:12px;font-weight:700;color:var(--sub)}
+/* 振り子 */
+.pend{position:relative;margin-top:6px}
+.pend svg{width:100%;height:auto;overflow:visible}
+.pend .arc{fill:none;stroke:var(--track);stroke-width:8;stroke-linecap:round}
+.pend .center{stroke:var(--sub);stroke-width:2;opacity:.5;stroke-dasharray:4 6}
+.pend .lim{stroke:var(--c-back);stroke-width:3;opacity:.8;stroke-linecap:round}
+.pend .pivot{fill:var(--sub)}
+#guideSvg{--gc:var(--c-address)}
+.pend .arm{stroke:var(--gc);stroke-width:6;stroke-linecap:round}
+.pend .head{fill:var(--gc)}
+.pend .glow{fill:var(--gc);opacity:.25}
+.pend .flash .head{filter:drop-shadow(0 0 14px var(--c-down))}
+#gDouble .arm{stroke:var(--text);stroke-width:9;opacity:.85}
+#gDouble .club{stroke:var(--gc);stroke-width:4;stroke-linecap:round}
+#gDouble .hands{fill:var(--text)}
+#gDouble .body{fill:none;stroke:var(--sub);stroke-width:3;opacity:.6}
+#gSlide .rail{stroke:var(--track);stroke-width:10;stroke-linecap:round}
+.gseg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.gseg button{min-height:44px;border-radius:12px;background:var(--panel2);border:2px solid var(--line);font-size:14px;font-weight:800;color:var(--sub)}
+.gseg button.on{border-color:var(--accent);color:var(--text)}
+.pend .cap{position:absolute;bottom:0;font-size:13px;font-weight:800;color:var(--sub)}
 .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
 .steps div{text-align:center;font-size:clamp(10px,2.8vw,13px);white-space:nowrap;letter-spacing:-.03em;font-weight:800;padding:8px 2px;border-radius:10px;background:var(--panel2);color:var(--sub);border:2px solid transparent}
 .steps div.on{color:var(--bg);border-color:transparent}
@@ -70,8 +86,8 @@ svg{display:block}
 .start.playing{background:var(--panel2);color:var(--text);border:3px solid var(--accent);box-shadow:none}
 
 /* トグルチップ */
-.toggles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
-.tg{min-height:62px;border-radius:14px;background:var(--panel);border:2px solid var(--line);font-size:14px;font-weight:800;color:var(--sub);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.toggles{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}
+.tg{min-height:68px;border-radius:14px;background:var(--panel);border:2px solid var(--line);font-size:16px;font-weight:800;color:var(--sub);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
 .tg svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .tg.on{border-color:var(--accent);color:var(--text)}
 .tg.on svg{stroke:var(--accent)}
@@ -117,7 +133,43 @@ svg{display:block}
 .sw.on{background:var(--accent);border-color:var(--accent)}
 .sw.on::after{transform:translateX(32px);background:var(--accent-ink)}
 .seg.small button{min-height:44px;font-size:15px}
+#modeSeg button{font-size:clamp(12px,3.4vw,18px);letter-spacing:-.02em;white-space:nowrap;padding:0 2px}
+.lamps{display:flex;gap:10px;justify-content:center;margin-top:10px}
+.lamps div{flex:1;max-width:80px;height:40px;border-radius:12px;background:var(--panel2);border:2px solid var(--line);display:grid;place-items:center;font-size:18px;font-weight:900;color:var(--sub)}
+.lamps div.on{background:var(--c-address);border-color:var(--c-address);color:var(--bg)}
+.lamps div.on.acc{background:var(--c-down);border-color:var(--c-down)}
+.tg.off{opacity:.3;pointer-events:none}
+.evt{width:100%;border-collapse:collapse;margin-top:8px}
+.evt th{font-size:13px;color:var(--sub);font-weight:800;padding:6px 0;text-align:center}
+.evt td{padding:7px 0;text-align:center;border-top:1px solid var(--line)}
+.evt td:first-child{text-align:left;font-size:16px;font-weight:800}
+.evt .sw{display:inline-block}
 input[type=range]{width:100%;accent-color:var(--accent);height:36px}
+input[type=text]{-webkit-user-select:text;user-select:text;font:inherit;font-size:17px;font-weight:700;color:var(--text);background:var(--panel2);border:2px solid var(--line);border-radius:12px;padding:10px 12px;min-height:48px;width:100%}
+.tplgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+.tplgrid button{min-height:48px;border-radius:12px;background:var(--panel2);border:2px solid var(--line);font-size:15px;font-weight:800;color:var(--sub);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 6px}
+.tplgrid button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.savebtn{margin-top:10px;min-height:46px;padding:0 18px;border-radius:12px;border:2px solid var(--accent);color:var(--accent);font-size:15px;font-weight:800}
+.savebtn:active{background:var(--accent);color:var(--accent-ink)}
+.esub{font-size:13px;font-weight:800;color:var(--sub);letter-spacing:.08em;margin:16px 0 4px}
+.erow{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid var(--line)}
+.erow>span:first-child{flex:none;width:78px;font-size:13px;font-weight:800;line-height:1.2}
+.erow .ev{flex:1;text-align:right;font-size:17px;font-weight:900;font-variant-numeric:tabular-nums;white-space:nowrap}
+.erow .pm{display:flex;gap:3px;flex:none}
+.erow .pm button{min-width:38px;min-height:44px;padding:0;border-radius:10px;background:var(--panel2);border:2px solid var(--line);font-size:14px;font-weight:900}
+.erow .pm button:active{background:var(--accent);color:var(--accent-ink)}
+.erow input[type=text]{flex:1;min-width:0;min-height:44px;padding:6px 10px;font-size:15px}
+.strokes .chip{flex:1;min-height:58px;line-height:1.15;padding:4px 6px}
+.strokes .chip small{display:block;font-size:12px;color:var(--sub);font-weight:700}
+.strokes .chip.on small{color:var(--accent)}
+.modal{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:16px}
+.modal.open{display:flex}
+.modal .box{width:100%;max-width:420px;background:var(--panel);border:2px solid var(--line);border-radius:20px;padding:16px}
+.modal .t{font-size:18px;font-weight:900;margin-bottom:10px}
+.modal #pickList button{display:block;width:100%;min-height:58px;margin-top:8px;border-radius:14px;background:var(--panel2);border:2px solid var(--line);font-size:18px;font-weight:900}
+.modal #pickList button:active{background:var(--accent);color:var(--accent-ink)}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:30;background:var(--text);color:var(--bg);font-weight:800;font-size:15px;padding:12px 18px;border-radius:14px;max-width:calc(100% - 32px);opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
 .status{font-size:12px;color:var(--accent);font-weight:700;margin-top:4px}
 .ver{font-size:13px;color:var(--sub);line-height:1.7}
 .hidden{display:none!important}
@@ -129,6 +181,7 @@ input[type=range]{width:100%;accent-color:var(--accent);height:36px}
     <div class="seg" id="modeSeg">
       <button data-mode="putter">パター</button>
       <button data-mode="full">フルスイング</button>
+      <button data-mode="metro">メトロノーム</button>
     </div>
     <button class="iconbtn" id="openSet" aria-label="設定">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
@@ -141,6 +194,7 @@ input[type=range]{width:100%;accent-color:var(--accent);height:36px}
     <div class="num" id="bpmNum">80.0</div>
     <div class="unit">BPM</div>
     <div class="clubname" id="clubName"></div>
+    <button class="savebtn" id="saveBpmBtn">このBPMをマイセットに保存</button>
     <div class="adj">
       <button data-d="-1">-1</button>
       <button data-d="-0.1">-0.1</button>
@@ -155,17 +209,54 @@ input[type=range]{width:100%;accent-color:var(--accent);height:36px}
       <div class="name" id="phaseName">アドレス</div>
       <div class="ev" id="phaseEv"></div>
     </div>
-    <div class="track" id="track">
-      <div class="rail"></div>
-      <div class="lim" id="limBack"></div>
-      <div class="mid"></div>
-      <div class="dot" id="dot"></div>
-      <div class="cap" style="left:4%">バック</div>
-      <div class="cap" style="right:4%">フォロー</div>
+    <div class="gseg" id="guideSeg">
+      <button data-v="pend">振り子</button><button data-v="double">腕とクラブ</button><button data-v="slide">スライド</button>
+    </div>
+    <div class="pend">
+      <svg viewBox="0 0 300 190" aria-hidden="true" id="guideSvg">
+        <!-- 1. 振り子 -->
+        <g id="gPend">
+          <path class="arc" d="M 1.5 68 A 158 158 0 0 0 298.5 68"/>
+          <line class="center" x1="150" y1="14" x2="150" y2="186"/>
+          <line class="lim" id="limBack" x1="150" y1="160" x2="150" y2="186"/>
+          <g id="pendArm">
+            <line class="arm" x1="150" y1="14" x2="150" y2="164"/>
+            <circle class="glow" cx="150" cy="172" r="26"/>
+            <rect class="head" x="128" y="162" width="44" height="20" rx="6"/>
+          </g>
+          <circle class="pivot" cx="150" cy="14" r="8"/>
+        </g>
+        <!-- 2. 腕とクラブ（二重振り子）: 肩→手→クラブヘッド -->
+        <g id="gDouble">
+          <path class="arc" d="M 26 95 A 132 132 0 0 0 274 95"/>
+          <line class="center" x1="150" y1="50" x2="150" y2="186"/>
+          <line class="lim" id="limD" x1="150" y1="168" x2="150" y2="190"/>
+          <circle class="body" cx="150" cy="22" r="16"/>
+          <line class="arm" id="dArm" x1="150" y1="50" x2="150" y2="120"/>
+          <line class="club" id="dClub" x1="150" y1="120" x2="150" y2="182"/>
+          <circle class="glow" id="dGlow" cx="150" cy="182" r="20"/>
+          <rect class="head" id="dHead" x="134" y="176" width="32" height="13" rx="5"/>
+          <circle class="hands" id="dHands" cx="150" cy="120" r="7"/>
+          <circle class="pivot" cx="150" cy="50" r="7"/>
+        </g>
+        <!-- 3. スライド: 棒が左右にスライド -->
+        <g id="gSlide">
+          <line class="rail" x1="18" y1="112" x2="282" y2="112"/>
+          <line class="center" x1="150" y1="60" x2="150" y2="164"/>
+          <line class="lim" id="limS" x1="150" y1="70" x2="150" y2="154"/>
+          <g id="sBar">
+            <rect class="glow" x="133" y="62" width="34" height="100" rx="12"/>
+            <rect class="head" x="141" y="70" width="18" height="84" rx="6"/>
+          </g>
+        </g>
+      </svg>
+      <div class="cap" id="capL" style="left:2%">バック</div>
+      <div class="cap" id="capR" style="right:2%">フォロー</div>
     </div>
     <div class="steps" id="steps">
       <div data-p="0">アドレス</div><div data-p="1">バックスイング</div><div data-p="2">ダウンスイング</div><div data-p="3">フィニッシュ</div>
     </div>
+    <div class="lamps hidden" id="lamps"></div>
   </div>
 
   <button class="start" id="startBtn"><svg viewBox="0 0 24 24" id="startIcon"><path d="M7 4.5v15l13-7.5z"/></svg><span id="startTxt">START</span></button>
@@ -173,11 +264,22 @@ input[type=range]{width:100%;accent-color:var(--accent);height:36px}
   <div class="toggles">
     <button class="tg" data-key="click"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>メトロノーム</button>
     <button class="tg" data-key="pitch"><svg viewBox="0 0 24 24"><path d="M3 18h4v-4H3zM10 18h4V10h-4zM17 18h4V5h-4z"/></svg>比率ガイド</button>
-    <button class="tg" data-key="vib"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M3 8v8M21 8v8"/></svg>バイブ</button>
+  </div>
+
+  <!-- メトロノーム専用：拍子 -->
+  <div class="card" id="metroCard">
+    <div class="label">拍子</div>
+    <div class="seg small" id="beatSeg" style="margin-top:10px">
+      <button data-v="1">1拍子</button><button data-v="2">2拍子</button><button data-v="3">3拍子</button><button data-v="4">4拍子</button>
+    </div>
+    <div class="set" style="border-bottom:none;padding-bottom:0">
+      <div><div class="t">1拍目を強調</div><div class="d">1拍目だけ高く大きな音にします。</div></div>
+      <button class="sw" id="accentSw" aria-label="1拍目を強調"></button>
+    </div>
   </div>
 
   <!-- 比率 -->
-  <div class="card">
+  <div class="card" id="ratioCard">
     <div class="row">
       <div>
         <div class="label">RATIO　バック：ダウン</div>
@@ -208,9 +310,11 @@ input[type=range]{width:100%;accent-color:var(--accent);height:36px}
       <button data-w="1" style="flex:1">+1</button>
       <button data-w="5" style="flex:1">+5</button>
     </div>
+    <div class="chips strokes" id="strokeChips"></div>
+    <div class="d" style="font-size:12px;color:var(--sub);margin-top:6px">ボタンを長押しすると、今の幅をそのボタンに保存できます。</div>
   </div>
 
-  <div class="card">
+  <div class="card" id="timeCard">
     <div class="label">タイミング（自動計算）</div>
     <div class="times">
       <div class="tb"><b id="tBack">0.00</b><span>バックスイング 秒</span></div>
@@ -239,12 +343,41 @@ input[type=range]{width:100%;accent-color:var(--accent);height:36px}
 
     <div class="card">
       <div class="set" style="display:block">
-        <div class="t">起動時のテンプレート</div>
-        <div class="d">アプリを開いたときのBPMの初期値。女性標準は全体に少しゆったりめ。</div>
-        <div class="seg small" id="tplSeg" style="margin-top:10px">
+        <div class="t">起動時のセット</div>
+        <div class="d">アプリを開いたときのBPMの初期値。女性標準は全体に少しゆったりめ。マイセットは自分で決めた値（比率とストローク幅のプリセットも切り替わります）。</div>
+        <div class="tplgrid" id="tplSeg" style="margin-top:10px">
           <button data-v="male">男性標準</button><button data-v="female">女性標準</button>
+          <button data-v="my0"></button><button data-v="my1"></button><button data-v="my2"></button>
         </div>
         <button class="chip" id="tplApply" style="margin-top:10px;width:100%">今すぐBPMに適用</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="t" style="font-size:17px;font-weight:800">マイセットの編集</div>
+      <div class="seg small" id="editSeg" style="margin-top:10px">
+        <button data-v="0"></button><button data-v="1"></button><button data-v="2"></button>
+      </div>
+      <div class="erow" style="margin-top:12px">
+        <span>名前</span>
+        <input type="text" id="myName" maxlength="12" autocomplete="off">
+      </div>
+      <div class="esub">クラブごとのBPM</div>
+      <div id="myClubs"></div>
+      <div class="esub">比率（バック：ダウン）</div>
+      <div id="myRatios"></div>
+      <div class="esub">ストローク幅のプリセット（パター）</div>
+      <div id="myStrokes"></div>
+      <button class="chip" id="myReset" style="margin-top:12px;width:100%">男性標準の値に戻す</button>
+    </div>
+
+    <div class="card">
+      <div class="set" style="display:block">
+        <div class="t">打ち方</div>
+        <div class="d">振り子が振れる向きを、アドレスした自分から見た向きに合わせます。</div>
+        <div class="seg small" id="handSeg" style="margin-top:10px">
+          <button data-v="left">左打ち</button><button data-v="right">右打ち</button>
+        </div>
       </div>
       <div class="set" style="display:block">
         <div class="t">テーマ</div>
@@ -263,7 +396,7 @@ input[type=range]{width:100%;accent-color:var(--accent);height:36px}
       <div class="set">
         <div>
           <div class="t">バックグラウンド再生</div>
-          <div class="d">画面ロック中や他のアプリ使用中もテンポ音を鳴らし続けます（音楽プレーヤー方式）。端末によっては止まる場合があります。振動は画面表示中のみ。</div>
+          <div class="d">画面ロック中や他のアプリ使用中もテンポ音を鳴らし続けます（音楽プレーヤー方式）。端末によっては止まる場合があります。</div>
         </div>
         <button class="sw" data-key="bg" aria-label="バックグラウンド再生"></button>
       </div>
@@ -278,9 +411,21 @@ input[type=range]{width:100%;accent-color:var(--accent);height:36px}
         <div><div class="t">比率ガイド（ピッチ変化）</div><div class="d">アドレス・テークバック・切り返し・インパクトで音の高さを変えます。</div></div>
         <button class="sw" data-key="pitch"></button>
       </div>
-      <div class="set">
-        <div><div class="t">バイブレーション</div><div class="d">カウントに合わせて振動。切り返しは強め。iPhoneのSafariは非対応です。</div></div>
-        <button class="sw" data-key="vib"></button>
+      <div class="set" style="display:block">
+        <div class="t">音の種類</div>
+        <div class="d">電子音＝澄んだ「ピッ」／ウッド＝柔らかい「コッ」／クリック＝乾いた「カチッ」</div>
+        <div class="seg small" id="soundSeg" style="margin-top:10px">
+          <button data-v="beep">電子音</button><button data-v="wood">ウッド</button><button data-v="click">クリック</button>
+        </div>
+        <button class="chip" id="previewBtn" style="margin-top:10px;width:100%">試聴（4つのタイミングを1回ずつ）</button>
+      </div>
+      <div class="set" style="display:block">
+        <div class="t">鳴らすタイミング</div>
+        <div class="d">パターとフルスイングで別々に選べます。</div>
+        <table class="evt" id="evtTable">
+          <thead><tr><th></th><th>パター</th><th>フルスイング</th></tr></thead>
+          <tbody></tbody>
+        </table>
       </div>
       <div class="set" style="display:block">
         <div class="t">音量</div>
@@ -289,13 +434,28 @@ input[type=range]{width:100%;accent-color:var(--accent);height:36px}
     </div>
 
     <div class="card ver">
-      <b>テンポ練習 v1.0.0</b><br>
-      最終更新: 2026-10-31　初版（パター／フルスイング、BPM微調整、比率、ストローク幅、タイミング計算、クラブ選択、音・ピッチ・振動、各種設定）<br>
+      <b>テンポ練習 v1.5.0</b><br>
+      最終更新: 2026-10-31　動きの表示を3パターン（振り子／腕とクラブ／スライド）から切り替えられるように<br>
+      v1.4.0（2026-10-31）マイセット3つ（クラブ別BPM・比率・メトロノームBPM・ストローク幅プリセット、起動時のセットに選べる、メイン画面から保存）、ストローク幅のプリセット（ショート／ミドル／ロング、長押しで保存）を追加<br>
+      v1.3.0（2026-10-31）メトロノームモード（1〜4拍子、1拍目の強調、振り子と拍ランプ）を追加<br>
+      v1.2.0（2026-10-31）音の種類（電子音／ウッド／クリック）と試聴、鳴らすタイミングのON/OFF（パター／フルスイング別）を追加<br>
+      v1.1.0（2026-10-31）振り子表示に変更、右打ち／左打ちの切り替え（初期は左打ち）を追加、バイブ機能を削除<br>
+      v1.0.0（2026-10-31）初版<br>
       テンポの考え方: 1拍（60÷BPM秒）＝バックスイングの時間。ダウンスイング＝バックスイング÷比率。<br>
       1サイクル: アドレス（1拍）→ テークバック → 切り返し → インパクト → フィニッシュ（1拍）
     </div>
   </div>
 </div>
+
+<!-- マイセット選択ダイアログ -->
+<div class="modal" id="pickModal">
+  <div class="box">
+    <div class="t" id="pickTitle">どのマイセットに保存しますか？</div>
+    <div id="pickList"></div>
+    <button class="chip" id="pickCancel" style="width:100%;margin-top:10px">やめる</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
 
 <audio id="bgAudio" playsinline preload="auto"></audio>
 
@@ -317,8 +477,8 @@ var CLUBS = [
 ];
 // 推奨標準BPM（1拍＝バックスイング時間）
 var TEMPLATES = {
-  male:   {DRIVER:76, FW:78, UT:80, I57:82, I89:84, PW:86, APPROACH:74, BUNKER:72, PUTTER:80},
-  female: {DRIVER:72, FW:74, UT:76, I57:78, I89:80, PW:82, APPROACH:70, BUNKER:68, PUTTER:76}
+  male:   {DRIVER:76, FW:78, UT:80, I57:82, I89:84, PW:86, APPROACH:74, BUNKER:72, PUTTER:80, METRO:80},
+  female: {DRIVER:72, FW:74, UT:76, I57:78, I89:80, PW:82, APPROACH:70, BUNKER:68, PUTTER:76, METRO:76}
 };
 var RATIO_CHIPS = { putter:[1.5, 2.0, 2.5, 3.0], full:[2.0, 2.5, 3.0, 3.5] };
 var BPM_MIN = 30, BPM_MAX = 160;
@@ -326,12 +486,35 @@ var BPM_MIN = 30, BPM_MAX = 160;
 var STORE_KEY = 'golf_tempo_v1';
 var defaults = {
   mode:'putter', club:'DRIVER', template:'male', theme:'dark',
-  wake:true, bg:false, click:true, pitch:true, vib:true, vol:80,
-  ratio:{putter:2.0, full:3.0}, widthCm:20, unit:'cm'
+  wake:true, bg:false, click:true, pitch:true, vol:80, hand:'left',
+  sound:'beep', events:{putter:[true,true,true,true], full:[true,true,true,true]},
+  ratio:{putter:2.0, full:3.0}, widthCm:20, unit:'cm',
+  beats:4, accent:true, guide:'pend',
+  mysets:[0,1,2].map(newMyset),
+  strokesStd: defaultStrokes()
 };
+function defaultStrokes(){ return [{name:'ショート', cm:10}, {name:'ミドル', cm:20}, {name:'ロング', cm:30}]; }
+// 新しいマイセット：男性標準の値をコピーして作る
+function newMyset(i){
+  var c = {}; for(var k in TEMPLATES.male) c[k] = TEMPLATES.male[k];
+  return { name:'マイセット' + (i+1), clubs:c, ratio:{putter:2.0, full:3.0}, strokes:defaultStrokes() };
+}
 var S = load();
+// 選んでいるセットのBPM表（男性標準／女性標準／マイセット）
+function myIndex(){ var m = /^my(\d)$/.exec(S.template); return m ? +m[1] : -1; }
+function curTpl(){ var i = myIndex(); return i >= 0 ? S.mysets[i].clubs : TEMPLATES[S.template]; }
+// ストローク幅のプリセット（マイセットはセットごと、標準セットは共通）
+function curStrokes(){ var i = myIndex(); return i >= 0 ? S.mysets[i].strokes : S.strokesStd; }
+function tplName(id){ var m = /^my(\d)$/.exec(id); return m ? S.mysets[+m[1]].name : (id==='female' ? '女性標準' : '男性標準'); }
 // BPMは起動時テンプレートから毎回セット（保存しない）
-var bpm = { putter: TEMPLATES[S.template].PUTTER, full: TEMPLATES[S.template][S.club] };
+var bpm = {};
+applyTemplate();
+function applyTemplate(){
+  var t = curTpl();
+  bpm.putter = t.PUTTER; bpm.full = t[S.club]; bpm.metro = t.METRO;
+  var i = myIndex();
+  if(i >= 0){ S.ratio.putter = S.mysets[i].ratio.putter; S.ratio.full = S.mysets[i].ratio.full; }
+}
 
 function load(){
   var o = JSON.parse(JSON.stringify(defaults));
@@ -339,8 +522,29 @@ function load(){
     var raw = localStorage.getItem(STORE_KEY);
     if(raw){ var s = JSON.parse(raw); for(var k in s){ if(k in o) o[k] = s[k]; } }
   }catch(e){}
-  if(!TEMPLATES[o.template]) o.template = 'male';
+  if(!TEMPLATES[o.template] && !/^my[012]$/.test(o.template)) o.template = 'male';
+  // マイセットの形を点検（欠けていれば補う）
+  if(!Array.isArray(o.mysets)) o.mysets = [];
+  for(var i=0;i<3;i++){
+    var d = newMyset(i), m = o.mysets[i];
+    if(!m || typeof m !== 'object'){ o.mysets[i] = d; continue; }
+    if(typeof m.name !== 'string' || !m.name) m.name = d.name;
+    m.clubs = m.clubs || {}; for(var ck in d.clubs){ if(typeof m.clubs[ck] !== 'number') m.clubs[ck] = d.clubs[ck]; }
+    m.ratio = m.ratio || {}; ['putter','full'].forEach(function(r){ if(typeof m.ratio[r] !== 'number') m.ratio[r] = d.ratio[r]; });
+    if(!Array.isArray(m.strokes) || m.strokes.length !== 3) m.strokes = d.strokes;
+  }
+  o.mysets.length = 3;
+  if(!Array.isArray(o.strokesStd) || o.strokesStd.length !== 3) o.strokesStd = defaultStrokes();
   if(o.club === 'PUTTER') o.club = 'DRIVER';
+  if(['putter','full','metro'].indexOf(o.mode) < 0) o.mode = 'putter';
+  o.beats = clamp(Math.round(+o.beats) || 4, 1, 4);
+  if(['pend','double','slide'].indexOf(o.guide) < 0) o.guide = 'pend';
+  if(['beep','wood','click'].indexOf(o.sound) < 0) o.sound = 'beep';
+  ['putter','full'].forEach(function(m){
+    if(!o.events || !Array.isArray(o.events[m]) || o.events[m].length !== 4){
+      o.events = o.events || {}; o.events[m] = [true,true,true,true];
+    }
+  });
   return o;
 }
 function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(S)); }catch(e){} }
@@ -351,21 +555,37 @@ function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
 
 /* ---------- テンポ計算 ---------- */
 function timing(){
-  var b = bpm[S.mode], r = S.ratio[S.mode];
+  var b = bpm[S.mode];
   var beat = 60 / b;
-  var back = beat, down = back / r;
-  return { beat:beat, back:back, down:down, total:back+down,
+  if(S.mode==='metro'){
+    // メトロノーム: 1小節 = 拍子の数だけ拍が並ぶ
+    var ev = [];
+    for(var k=0;k<S.beats;k++) ev.push(k*beat);
+    return { mode:'metro', beat:beat, cycle: beat*S.beats, ev: ev };
+  }
+  var back = beat, down = back / S.ratio[S.mode];
+  return { mode:S.mode, beat:beat, back:back, down:down, total:back+down,
            // 1サイクル: アドレス1拍 + バック + ダウン + フィニッシュ1拍
            cycle: beat + back + down + beat,
-           tTake: beat, tTop: beat+back, tImp: beat+back+down };
+           tTake: beat, tTop: beat+back, tImp: beat+back+down,
+           ev: [0, beat, beat+back, beat+back+down] };
 }
 
 /* ---------- 画面描画 ---------- */
 function render(){
   document.querySelectorAll('#modeSeg button').forEach(function(b){ b.classList.toggle('on', b.dataset.mode===S.mode); });
   $('bpmNum').textContent = bpm[S.mode].toFixed(1);
-  var club = S.mode==='putter' ? 'PUTTER' : CLUBS.filter(function(c){return c.id===S.club;})[0].name;
+  var metro = S.mode==='metro';
+  var club = S.mode==='putter' ? 'PUTTER' : metro ? (S.beats + '拍子') : CLUBS.filter(function(c){return c.id===S.club;})[0].name;
   $('clubName').textContent = club;
+  $('strokeCard').classList.toggle('hidden', S.mode!=='putter');
+  $('clubCard').classList.toggle('hidden', S.mode!=='full');
+  ['ratioCard','timeCard','steps','capL','capR','limBack','limD','limS'].forEach(function(id){ $(id).classList.toggle('hidden', metro); });
+  $('metroCard').classList.toggle('hidden', !metro);
+  $('lamps').classList.toggle('hidden', !metro);
+  // メトロノームでは比率ガイドを使わないので押せない表示にする
+  document.querySelector('.tg[data-key=pitch]').classList.toggle('off', metro);
+  if(metro){ renderMetro(); renderCommon(); return; }
   $('ratioVal').innerHTML = S.ratio[S.mode].toFixed(1) + '<small>: 1</small>';
   var chips = $('ratioChips'); chips.innerHTML = '';
   RATIO_CHIPS[S.mode].forEach(function(v){
@@ -374,12 +594,11 @@ function render(){
     c.onclick = function(){ setRatio(v); };
     chips.appendChild(c);
   });
-  $('strokeCard').classList.toggle('hidden', S.mode!=='putter');
-  $('clubCard').classList.toggle('hidden', S.mode!=='full');
   // ストローク幅
   if(S.unit==='cm') $('widthVal').innerHTML = Math.round(S.widthCm) + '<small>cm</small>';
   else $('widthVal').innerHTML = (S.widthCm/2.54).toFixed(1) + '<small>inch</small>';
   document.querySelectorAll('#unitSeg button').forEach(function(b){ b.classList.toggle('on', b.dataset.u===S.unit); });
+  renderStrokeChips();
   // タイミング
   var t = timing();
   $('tBack').textContent = t.back.toFixed(2);
@@ -397,17 +616,141 @@ function render(){
     var b = document.createElement('button');
     var on = (S.mode==='full' && c.id===S.club);
     b.className = on ? 'on' : '';
-    b.innerHTML = c.name + '<small>' + TEMPLATES[S.template][c.id] + ' BPM</small>';
+    b.innerHTML = c.name + '<small>' + curTpl()[c.id] + ' BPM</small>';
     b.onclick = function(){ selectClub(c.id); };
     cl.appendChild(b);
   });
-  // トグル
+  renderCommon();
+}
+
+function fmtWidth(cm){ return S.unit==='cm' ? Math.round(cm) + 'cm' : (cm/2.54).toFixed(1) + 'inch'; }
+
+// ストローク幅のプリセットボタン（押す＝その幅にする／長押し＝今の幅を保存）
+function renderStrokeChips(){
+  var box = $('strokeChips'); box.innerHTML = '';
+  curStrokes().forEach(function(p, i){
+    var c = document.createElement('button');
+    c.className = 'chip' + (Math.round(p.cm) === Math.round(S.widthCm) ? ' on' : '');
+    c.innerHTML = escapeHtml(p.name) + '<small>' + fmtWidth(p.cm) + '</small>';
+    var timer = null, long = false;
+    c.addEventListener('pointerdown', function(){
+      long = false;
+      timer = setTimeout(function(){
+        long = true;
+        if(confirm('今の幅（' + fmtWidth(S.widthCm) + '）を「' + p.name + '」に保存しますか？')){
+          p.cm = Math.round(S.widthCm*10)/10; save(); render();
+          toast('「' + p.name + '」を ' + fmtWidth(p.cm) + ' にしました');
+        }
+      }, 600);
+    });
+    ['pointerup','pointerleave','pointercancel'].forEach(function(ev){ c.addEventListener(ev, function(){ clearTimeout(timer); }); });
+    c.addEventListener('click', function(){ if(long) return; S.widthCm = p.cm; save(); changed(); });
+    c.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+    box.appendChild(c);
+  });
+}
+
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, function(ch){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]; }); }
+
+// マイセットの編集画面
+var editIdx = 0;
+function renderEditor(){
+  document.querySelectorAll('#editSeg button').forEach(function(b){
+    b.textContent = S.mysets[+b.dataset.v].name; b.classList.toggle('on', +b.dataset.v===editIdx);
+  });
+  var m = S.mysets[editIdx];
+  if(document.activeElement !== $('myName')) $('myName').value = m.name;
+  var rows = CLUBS.map(function(c){ return {key:c.id, label:c.name}; }).concat([{key:'METRO', label:'メトロノーム'}]);
+  $('myClubs').innerHTML = rows.map(function(r){
+    return '<div class="erow"><span>' + r.label + '</span><span class="ev">' + m.clubs[r.key].toFixed(1) + '</span>' +
+      '<span class="pm"><button data-k="' + r.key + '" data-d="-1">-1</button><button data-k="' + r.key + '" data-d="-0.1">-.1</button>' +
+      '<button data-k="' + r.key + '" data-d="0.1">+.1</button><button data-k="' + r.key + '" data-d="1">+1</button></span></div>';
+  }).join('');
+  $('myRatios').innerHTML = [['putter','パター'],['full','フルスイング']].map(function(r){
+    return '<div class="erow"><span>' + r[1] + '</span><span class="ev">' + m.ratio[r[0]].toFixed(1) + ' : 1</span>' +
+      '<span class="pm"><button data-r2="' + r[0] + '" data-d="-0.1">-.1</button><button data-r2="' + r[0] + '" data-d="0.1">+.1</button></span></div>';
+  }).join('');
+  if(!$('myStrokes').contains(document.activeElement)){
+    $('myStrokes').innerHTML = m.strokes.map(function(p, i){
+      return '<div class="erow"><input type="text" maxlength="8" data-sn="' + i + '" value="' + escapeHtml(p.name) + '">' +
+        '<span class="ev" style="flex:none;min-width:70px">' + fmtWidth(p.cm) + '</span>' +
+        '<span class="pm"><button data-s="' + i + '" data-d="-1">-1</button><button data-s="' + i + '" data-d="1">+1</button></span></div>';
+    }).join('');
+  } else {
+    // 名前を入力中は入力欄を作り直さず、幅の数字だけ更新する
+    Array.prototype.forEach.call($('myStrokes').querySelectorAll('.ev'), function(el, i){ el.textContent = fmtWidth(m.strokes[i].cm); });
+  }
+}
+
+// マイセットの編集操作（ボタンはまとめて受け付ける）
+function editStep(btn){
+  var m = S.mysets[editIdx], d = parseFloat(btn.dataset.d);
+  if(btn.dataset.k) m.clubs[btn.dataset.k] = clamp(round1(m.clubs[btn.dataset.k] + d), BPM_MIN, BPM_MAX);
+  else if(btn.dataset.r2) m.ratio[btn.dataset.r2] = clamp(round1(m.ratio[btn.dataset.r2] + d), 1.0, 5.0);
+  else if(btn.dataset.s){
+    var p = m.strokes[+btn.dataset.s];
+    var step = S.unit==='cm' ? d : d*2.54*0.5;
+    p.cm = clamp(S.unit==='cm' ? Math.round(p.cm + step) : p.cm + step, 2, 150);
+  }
+  save(); render();
+}
+(function(){
+  var t1, t2;
+  function stop(){ clearTimeout(t1); clearInterval(t2); }
+  ['myClubs','myRatios','myStrokes'].forEach(function(id){
+    var box = $(id);
+    box.addEventListener('pointerdown', function(e){
+      var b = e.target.closest('button'); if(!b) return;
+      e.preventDefault(); editStep(b);
+      t1 = setTimeout(function(){ t2 = setInterval(function(){ editStep(b); }, 90); }, 450);
+    });
+    box.addEventListener('pointerleave', stop);
+    box.addEventListener('input', function(e){
+      var i = e.target.dataset.sn; if(i === undefined) return;
+      S.mysets[editIdx].strokes[+i].name = e.target.value.trim() || ('プリセット' + (+i+1)); save(); render();
+    });
+  });
+  // 押したボタンは数値の更新で作り直されるので、指を離したことは画面全体で受け取る
+  ['pointerup','pointercancel'].forEach(function(ev){ document.addEventListener(ev, stop); });
+})();
+
+// メトロノーム画面（拍子ボタン・強調スイッチ・拍のランプ）
+function renderMetro(){
+  document.querySelectorAll('#beatSeg button').forEach(function(b){ b.classList.toggle('on', +b.dataset.v===S.beats); });
+  $('accentSw').classList.toggle('on', !!S.accent);
+  var lp = $('lamps');
+  if(lp.children.length !== S.beats){
+    lp.innerHTML = '';
+    for(var k=0;k<S.beats;k++){ var d = document.createElement('div'); d.textContent = k+1; lp.appendChild(d); }
+  }
+}
+
+// どのモードでも共通の表示（トグル・設定画面・振り子）
+function renderCommon(){
   document.querySelectorAll('.tg, .sw').forEach(function(el){ el.classList.toggle('on', !!S[el.dataset.key]); });
-  document.querySelectorAll('#tplSeg button').forEach(function(b){ b.classList.toggle('on', b.dataset.v===S.template); });
+  document.querySelectorAll('#tplSeg button').forEach(function(b){ b.classList.toggle('on', b.dataset.v===S.template); b.textContent = tplName(b.dataset.v); });
+  renderEditor();
   document.querySelectorAll('#themeSeg button').forEach(function(b){ b.classList.toggle('on', b.dataset.v===S.theme); });
+  document.querySelectorAll('#handSeg button').forEach(function(b){ b.classList.toggle('on', b.dataset.v===S.hand); });
+  document.querySelectorAll('#soundSeg button').forEach(function(b){ b.classList.toggle('on', b.dataset.v===S.sound); });
+  document.querySelectorAll('#evtTable .sw').forEach(function(b){ b.classList.toggle('on', !!S.events[b.dataset.m][+b.dataset.i]); });
+  $('accentSw').classList.toggle('on', !!S.accent);
   $('vol').value = S.vol;
-  // バック上限マーカー
-  $('limBack').style.left = (50 - amp()*46) + '%';
+  // 左打ちはバックが左、右打ちはバックが右
+  var left = S.hand==='left';
+  $('capL').textContent = left ? 'バック' : 'フォロー';
+  $('capR').textContent = left ? 'フォロー' : 'バック';
+  // バックスイング到達点の目印
+  var bx = screenX(-amp());
+  $('limBack').setAttribute('transform', 'rotate(' + (-bx*maxDeg()) + ' 150 14)');
+  $('limD').setAttribute('transform', 'rotate(' + (-bx*maxDeg()) + ' 150 50)');
+  $('limS').setAttribute('transform', 'translate(' + (bx*125) + ' 0)');
+  // 表示パターンの切り替え
+  document.querySelectorAll('#guideSeg button').forEach(function(b){ b.classList.toggle('on', b.dataset.v===S.guide); });
+  $('gPend').classList.toggle('hidden', S.guide!=='pend');
+  $('gDouble').classList.toggle('hidden', S.guide!=='double');
+  $('gSlide').classList.toggle('hidden', S.guide!=='slide');
+  curPhase = -99;  // 表示を必ず描き直す
   if(!playing) drawAt(0);
 }
 
@@ -424,8 +767,8 @@ if(window.matchMedia) matchMedia('(prefers-color-scheme: light)').addEventListen
 function setBpm(v){ bpm[S.mode] = clamp(round1(v), BPM_MIN, BPM_MAX); changed(); }
 function setRatio(v){ S.ratio[S.mode] = clamp(round1(v), 1.0, 5.0); save(); changed(); }
 function selectClub(id){
-  if(id==='PUTTER'){ S.mode = 'putter'; bpm.putter = TEMPLATES[S.template].PUTTER; }
-  else { S.club = id; bpm.full = TEMPLATES[S.template][id]; }
+  if(id==='PUTTER'){ S.mode = 'putter'; bpm.putter = curTpl().PUTTER; }
+  else { S.club = id; bpm.full = curTpl()[id]; }
   save(); changed();
 }
 function changed(){ render(); if(playing) scheduleRestart(); }
@@ -466,9 +809,81 @@ document.querySelectorAll('.tg, .sw').forEach(function(el){
 });
 document.querySelectorAll('#tplSeg button').forEach(function(b){ b.onclick = function(){ S.template = b.dataset.v; save(); render(); }; });
 $('tplApply').onclick = function(){
-  bpm.putter = TEMPLATES[S.template].PUTTER; bpm.full = TEMPLATES[S.template][S.club]; changed();
+  applyTemplate(); save(); changed();
+  toast(tplName(S.template) + ' のBPMにしました');
 };
+document.querySelectorAll('#beatSeg button').forEach(function(b){ b.onclick = function(){ S.beats = +b.dataset.v; save(); changed(); }; });
+$('accentSw').onclick = function(){ S.accent = !S.accent; save(); changed(); };
+document.querySelectorAll('#guideSeg button').forEach(function(b){ b.onclick = function(){ S.guide = b.dataset.v; save(); render(); }; });
+
+/* ---------- マイセット ---------- */
+document.querySelectorAll('#editSeg button').forEach(function(b){ b.onclick = function(){ editIdx = +b.dataset.v; $('myName').blur(); render(); }; });
+$('myName').addEventListener('input', function(){
+  S.mysets[editIdx].name = this.value.trim() || ('マイセット' + (editIdx+1)); save(); render();
+});
+$('myReset').onclick = function(){
+  var m = S.mysets[editIdx];
+  if(!confirm('「' + m.name + '」のBPM・比率・ストローク幅を男性標準の値に戻しますか？（名前はそのまま）')) return;
+  var d = newMyset(editIdx); m.clubs = d.clubs; m.ratio = d.ratio; m.strokes = d.strokes;
+  save(); render(); toast('「' + m.name + '」を男性標準の値に戻しました');
+};
+
+// メイン画面「このBPMをマイセットに保存」
+function curClubKey(){ return S.mode==='putter' ? 'PUTTER' : S.mode==='metro' ? 'METRO' : S.club; }
+function clubLabel(key){
+  if(key==='METRO') return 'メトロノーム';
+  return CLUBS.filter(function(c){ return c.id===key; })[0].name;
+}
+function saveBpmTo(i){
+  var key = curClubKey(), v = bpm[S.mode];
+  S.mysets[i].clubs[key] = v; save(); render();
+  toast('「' + S.mysets[i].name + '」の ' + clubLabel(key) + ' を ' + v.toFixed(1) + ' BPM にしました');
+}
+$('saveBpmBtn').onclick = function(){
+  var i = myIndex();
+  if(i >= 0){ saveBpmTo(i); return; }
+  // 標準セットを使っているときは、保存先のマイセットを選んでもらう
+  $('pickTitle').textContent = clubLabel(curClubKey()) + ' の ' + bpm[S.mode].toFixed(1) + ' BPM を、どのマイセットに保存しますか？';
+  $('pickList').innerHTML = '';
+  S.mysets.forEach(function(m, k){
+    var b = document.createElement('button'); b.textContent = m.name;
+    b.onclick = function(){ $('pickModal').classList.remove('open'); saveBpmTo(k); };
+    $('pickList').appendChild(b);
+  });
+  $('pickModal').classList.add('open');
+};
+$('pickCancel').onclick = function(){ $('pickModal').classList.remove('open'); };
+
+var toastTimer = null;
+function toast(msg){
+  var t = $('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2200);
+}
 document.querySelectorAll('#themeSeg button').forEach(function(b){ b.onclick = function(){ S.theme = b.dataset.v; save(); applyTheme(); render(); }; });
+document.querySelectorAll('#handSeg button').forEach(function(b){ b.onclick = function(){ S.hand = b.dataset.v; save(); render(); }; });
+document.querySelectorAll('#soundSeg button').forEach(function(b){
+  b.onclick = function(){ S.sound = b.dataset.v; save(); render(); if(playing) scheduleRestart(); };
+});
+$('previewBtn').onclick = function(){ previewSound(); };
+// 鳴らすタイミングの表を作る
+(function(){
+  var names = ['アドレス','テークバック','切り返し','インパクト'], tb = document.querySelector('#evtTable tbody');
+  names.forEach(function(nm, i){
+    var tr = document.createElement('tr');
+    tr.innerHTML = '<td>' + nm + '</td>';
+    ['putter','full'].forEach(function(m){
+      var td = document.createElement('td'), sw = document.createElement('button');
+      sw.className = 'sw'; sw.dataset.m = m; sw.dataset.i = i;
+      sw.setAttribute('aria-label', nm + (m==='putter' ? '（パター）' : '（フルスイング）'));
+      sw.onclick = function(){
+        S.events[m][i] = !S.events[m][i]; save(); render();
+        if(playing && m===S.mode) scheduleRestart();
+      };
+      td.appendChild(sw); tr.appendChild(td);
+    });
+    tb.appendChild(tr);
+  });
+})();
 $('vol').oninput = function(){
   S.vol = +this.value; save();
   if(gain) gain.gain.value = S.vol/100;
@@ -488,24 +903,64 @@ function buildSamples(sr){
   var n = Math.round(t.cycle * sr);
   var data = new Float32Array(n);
   if(!S.click) return {data:data, t:t};
+  if(S.mode==='metro'){
+    // 1拍目を強調するときは1拍目だけ高く大きく
+    t.ev.forEach(function(at, k){
+      var acc = S.accent && k===0 && S.beats > 1;
+      addSound(data, Math.round(at*sr), sr, acc ? 1320 : 880, acc ? 1.0 : 0.7, S.sound);
+    });
+    return {data:data, t:t};
+  }
   var ev = [
     {at:0,       f:PITCH.address, a:0.55},
     {at:t.tTake, f:PITCH.take,    a:0.75},
     {at:t.tTop,  f:PITCH.top,     a:1.0},
     {at:t.tImp,  f:PITCH.impact,  a:0.9}
   ];
-  ev.forEach(function(e){
+  var on = S.events[S.mode];
+  ev.forEach(function(e, k){
+    if(!on[k]) return;  // このタイミングは鳴らさない
     var f = S.pitch ? e.f : 1000;
     var a = S.pitch ? e.a : (e.at===t.tTop ? 1.0 : 0.75);
-    var start = Math.round(e.at*sr), len = Math.round(0.07*sr);
-    for(var i=0;i<len && start+i<n;i++){
-      var x = i/sr;
-      var env = Math.exp(-x*55) * Math.min(1, i/30);
-      var v = Math.sin(2*Math.PI*f*x) + 0.35*Math.sin(2*Math.PI*f*2*x) + 0.15*Math.sin(2*Math.PI*f*3.01*x);
-      data[start+i] += 0.5 * a * env * v;
-    }
+    addSound(data, Math.round(e.at*sr), sr, f, a, S.sound);
   });
   return {data:data, t:t};
+}
+
+// 1つの音を波形に書き込む（type: beep=電子音 / wood=ウッド / click=クリック）
+function addSound(data, start, sr, f, a, type){
+  var n = data.length, len = Math.round(0.09*sr), seed = 12345;
+  function noise(){ seed = (seed*1103515245 + 12345) & 0x7fffffff; return seed/0x3fffffff - 1; }
+  for(var i=0;i<len && start+i<n;i++){
+    var x = i/sr, v;
+    if(type==='wood'){
+      // 木をたたいたような「コッ」：低めの音を素早く減衰、最初にごく短い打撃ノイズ
+      var g = f*0.55;
+      v = (Math.sin(2*Math.PI*g*x) + 0.5*Math.sin(2*Math.PI*g*2.76*x)) * Math.exp(-x*75)
+        + noise()*0.6*Math.exp(-x*900);
+      v *= 0.75;
+    } else if(type==='click'){
+      // 乾いた「カチッ」：とても短いノイズと高い音
+      v = noise()*Math.exp(-x*1400) + 0.8*Math.sin(2*Math.PI*f*1.6*x)*Math.exp(-x*260);
+      v *= 0.8;
+    } else {
+      // 電子音「ピッ」
+      v = (Math.sin(2*Math.PI*f*x) + 0.35*Math.sin(2*Math.PI*f*2*x) + 0.15*Math.sin(2*Math.PI*f*3.01*x)) * Math.exp(-x*55);
+    }
+    data[start+i] += 0.5 * a * v * Math.min(1, i/20);
+  }
+}
+
+// 試聴：選んだ音で4つのタイミングの音を1回ずつ鳴らす
+function previewSound(){
+  if(!ctx){ ctx = new (window.AudioContext||window.webkitAudioContext)(); gain = ctx.createGain(); gain.connect(ctx.destination); }
+  if(ctx.state==='suspended') ctx.resume();
+  gain.gain.value = S.vol/100;
+  var sr = ctx.sampleRate, gap = 0.4, data = new Float32Array(Math.round(sr*(gap*4+0.2)));
+  var fs = [PITCH.address, PITCH.take, PITCH.top, PITCH.impact], as = [0.55, 0.75, 1.0, 0.9];
+  fs.forEach(function(f, k){ addSound(data, Math.round(k*gap*sr), sr, S.pitch ? f : 1000, as[k], S.sound); });
+  var ab = ctx.createBuffer(1, data.length, sr); ab.getChannelData(0).set(data);
+  var s = ctx.createBufferSource(); s.buffer = ab; s.connect(gain); s.start();
 }
 
 function toWav(samples, sr, repeat){
@@ -539,7 +994,7 @@ function startAudio(){
     var p = a.play(); if(p && p.catch) p.catch(function(){});
     if('mediaSession' in navigator){
       try{
-        navigator.mediaSession.metadata = new MediaMetadata({title:'テンポ練習 ' + bpm[S.mode].toFixed(1) + ' BPM', artist: S.mode==='putter'?'パター':'フルスイング'});
+        navigator.mediaSession.metadata = new MediaMetadata({title:'テンポ練習 ' + bpm[S.mode].toFixed(1) + ' BPM', artist: {putter:'パター', full:'フルスイング', metro:'メトロノーム'}[S.mode]});
         navigator.mediaSession.setActionHandler('pause', function(){ stop(); });
         navigator.mediaSession.setActionHandler('play', function(){ start(); });
       }catch(e){}
@@ -587,33 +1042,96 @@ function scheduleRestart(){
 }
 $('startBtn').onclick = function(){ playing ? stop() : start(); };
 
-/* ---------- ビジュアルガイドとバイブ ---------- */
+/* ---------- ビジュアルガイド ---------- */
 var COLORS = ['--c-address','--c-back','--c-down','--c-finish'];
 var NAMES = ['アドレス','バックスイング','ダウンスイング','フィニッシュ'];
-var lastCycle = -1, lastEv = -1, evTimer = null, curPhase = -1;
+var lastCycle = -1, lastEv = -1, evTimer = null, curPhase = -1, metroCount = 0;
 
 function amp(){
   // パターはストローク幅に応じて振れ幅を変える（60cmで最大）
   if(S.mode==='putter') return clamp(S.widthCm/60, 0.2, 1);
   return 1;
 }
+// 振り子の最大角度（度）。フルスイングは大きく振る
+function maxDeg(){ return S.mode==='full' ? 70 : 60; }
+// x: -1(バック最大)〜+1(フォロー最大) を画面上の左右(+が右)に変換
+function screenX(x){ return S.hand==='left' ? x : -x; }
 function easeInOut(p){ return p<.5 ? 2*p*p : 1-Math.pow(-2*p+2,2)/2; }
 
-function drawAt(tc){
-  var t = cur && playing ? cur : timing();
+// 手首のコックの最大角度（度）。パターは手首を使わないので0
+function hingeDeg(){ return S.mode==='full' ? 85 : 0; }
+
+// 表示パターンに合わせて描く。sx・sh は画面上の左右（+が右）、-1〜+1
+function drawGuide(sx, sh){
+  if(S.guide==='double'){
+    // 腕（肩→手）とクラブ（手→ヘッド）。角度は真下を0、右へ振るとプラス
+    var armDeg = sx*maxDeg(), clubDeg = armDeg + sh*hingeDeg();
+    var a = armDeg*Math.PI/180, c = clubDeg*Math.PI/180;
+    var hx = 150 + 70*Math.sin(a), hy = 50 + 70*Math.cos(a);
+    var cx = hx + 62*Math.sin(c), cy = hy + 62*Math.cos(c);
+    setLine($('dArm'), 150, 50, hx, hy); setLine($('dClub'), hx, hy, cx, cy);
+    $('dHands').setAttribute('cx', hx); $('dHands').setAttribute('cy', hy);
+    $('dGlow').setAttribute('cx', cx); $('dGlow').setAttribute('cy', cy);
+    $('dHead').setAttribute('transform', 'translate(' + (cx-150) + ' ' + (cy-182) + ') rotate(' + (-clubDeg) + ' 150 182)');
+  } else if(S.guide==='slide'){
+    $('sBar').setAttribute('transform', 'translate(' + (sx*125) + ' 0)');
+  } else {
+    // SVGの回転は時計回りが正。ヘッドを右へ振るには負の角度にする
+    $('pendArm').setAttribute('transform', 'rotate(' + (-sx*maxDeg()) + ' 150 14)');
+  }
+}
+function setLine(el, x1, y1, x2, y2){
+  el.setAttribute('x1', x1); el.setAttribute('y1', y1); el.setAttribute('x2', x2); el.setAttribute('y2', y2);
+}
+
+// メトロノーム: 拍のたびに振り子が左右の端に届く（昔のメトロノームと同じ動き）
+function drawMetro(tc, t){
+  var k = Math.min(S.beats-1, Math.floor(tc / t.beat)), p = (tc - k*t.beat) / t.beat;
+  var x = 0;
+  if(playing){
+    // 拍ごとに端から反対の端へ。小節をまたいでも左右交互になるよう通し番号で向きを決める
+    var n = metroCount + k, from = (n % 2 === 0) ? -1 : 1;
+    x = from * Math.cos(Math.PI * p) * 0.85;
+  }
+  // メトロノームは左右の向きに意味がないので、打ち方による反転をしない
+  drawGuide(x, 0);
+  var acc = S.accent && k===0 && S.beats > 1;
+  var key = playing ? k : -1;
+  if(key !== curPhase){
+    curPhase = key;
+    var col = acc && playing ? 'var(--c-down)' : 'var(--c-address)';
+    $('guideSvg').style.setProperty('--gc', col);
+    $('phaseName').textContent = playing ? (k+1) + '拍目' : 'メトロノーム';
+    $('phaseName').style.color = col;
+    Array.prototype.forEach.call($('lamps').children, function(d, i){
+      d.classList.toggle('on', playing && i===k); d.classList.toggle('acc', S.accent && i===0 && S.beats > 1);
+    });
+  }
+}
+
+function drawAt(tc, fromFinish){
+  // 再生中にモードを切り替えた直後（音の作り直し待ち）は、新しいモードの計算を使う
+  var t = cur && playing && cur.mode===S.mode ? cur : timing();
+  if(S.mode==='metro') return drawMetro(tc, t);
   var A = amp(), x = 0, ph = 0;
-  if(tc < t.tTake){ ph = 0; x = 0; }
-  else if(tc < t.tTop){ ph = 1; x = -A*easeInOut((tc-t.tTake)/t.back); }
-  else if(tc < t.tImp){ ph = 2; var p = (tc-t.tTop)/t.down; x = -A*(1-p*p); }  // 加速しながら戻る
+  // h: 手首のコック（-1＝バック側に最大、+1＝フォロー側に最大）。「腕とクラブ」表示で使う
+  var h = 0;
+  var followMax = S.mode==='putter' ? A : 1;
+  if(tc < t.tTake){ ph = 0;
+         // 2回目以降のアドレスはフィニッシュ位置から静かに真下へ戻す
+         var r = fromFinish ? clamp(tc/(t.beat*0.5), 0, 1) : 1;
+         x = followMax*(1-easeInOut(r)); h = 0.8*(1-easeInOut(r)); }
+  else if(tc < t.tTop){ ph = 1; var pb = (tc-t.tTake)/t.back;
+         x = -A*easeInOut(pb); h = -easeInOut(pb); }               // 振り上げながら手首をためる
+  else if(tc < t.tImp){ ph = 2; var p = (tc-t.tTop)/t.down;
+         x = -A*(1-p*p); h = -(1-Math.pow(p,3)); }                  // 加速しながら戻り、手首は最後にほどける
   else { ph = 3; var q = clamp((tc-t.tImp)/(t.beat*0.45), 0, 1);
-         var follow = S.mode==='putter' ? A : 1;
-         x = follow*(1-Math.pow(1-q,3)); }
-  var w = $('track').clientWidth * 0.46;
-  $('dot').style.transform = 'translateX(' + (x*w) + 'px)';
+         x = followMax*(1-Math.pow(1-q,3)); h = 0.8*(1-Math.pow(1-q,3)); }
+  drawGuide(screenX(x), screenX(h));
   if(ph !== curPhase){
     curPhase = ph;
     var col = 'var(' + COLORS[ph] + ')';
-    $('dot').style.background = col; $('dot').style.color = col;
+    $('guideSvg').style.setProperty('--gc', col);
     $('phaseName').textContent = NAMES[ph]; $('phaseName').style.color = col;
     document.querySelectorAll('#steps div').forEach(function(d,i){
       d.classList.toggle('on', i===ph); d.style.background = i===ph ? col : '';
@@ -622,13 +1140,15 @@ function drawAt(tc){
 }
 
 function fireEvent(i){
-  var labels = ['アドレス','テークバック','切り返し','インパクト'];
-  var ev = $('phaseEv'); ev.textContent = labels[i]; ev.classList.add('show');
-  clearTimeout(evTimer); evTimer = setTimeout(function(){ ev.classList.remove('show'); }, 160);
-  if(S.vib && navigator.vibrate){
-    // 切り返しは強め（長め）に振動
-    navigator.vibrate(i===2 ? [90] : (i===0 ? [20] : [35]));
+  var ev = $('phaseEv');
+  if(S.mode==='metro'){
+    ev.textContent = ''; return;
   }
+  var labels = ['アドレス','テークバック','切り返し','インパクト'];
+  ev.textContent = labels[i]; ev.classList.add('show');
+  // 切り返しの瞬間はヘッドを光らせる
+  if(i===2) $('guideSvg').classList.add('flash');
+  clearTimeout(evTimer); evTimer = setTimeout(function(){ ev.classList.remove('show'); $('guideSvg').classList.remove('flash'); }, 160);
 }
 
 // 画面の描画(rAF)が間引かれる端末でも振動や表示がずれないよう、タイマーでも同じ処理を呼ぶ
@@ -642,15 +1162,17 @@ function tick(){
   if(!playing) return;
   var e = elapsed(), t = cur;
   var cyc = Math.floor(e / t.cycle), tc = e - cyc*t.cycle;
+  // メトロノームの振り子の向きを決める通し拍数（小節の頭までの拍数）
+  metroCount = cyc * t.ev.length;
   if(e > 0){
-    var times = [0, t.tTake, t.tTop, t.tImp], idx = -1;
-    for(var i=3;i>=0;i--){ if(tc >= times[i]){ idx = i; break; } }
+    var times = t.ev, idx = -1;
+    for(var i=times.length-1;i>=0;i--){ if(tc >= times[i]){ idx = i; break; } }
     if(cyc !== lastCycle || idx !== lastEv){
       if(!(cyc===lastCycle && idx < lastEv)) fireEvent(idx);
       lastCycle = cyc; lastEv = idx;
     }
   }
-  drawAt(tc);
+  drawAt(tc, cyc > 0);
 }
 
 /* ---------- スリープ防止 ---------- */
